@@ -26,7 +26,7 @@ public class Employee extends BaseEntity {
     private String phone;
 
     @Column(nullable = false)
-    private String status;
+    private String employmentStatus;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "employee")
     private Contract contract;
