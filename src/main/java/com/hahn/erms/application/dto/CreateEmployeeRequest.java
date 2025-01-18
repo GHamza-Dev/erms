@@ -3,6 +3,8 @@ package com.hahn.erms.application.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +12,7 @@ import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class CreateEmployeeRequest {
     @NotBlank
     private String firstName;
@@ -29,7 +32,8 @@ public class CreateEmployeeRequest {
     @NotNull
     private String contractType;
 
-    @NotNull
+    @NotBlank
+    @Pattern(regexp = "^(ACTIVE|INACTIVE|ON_LEAVE)$", message = "Status must be ACTIVE, INACTIVE, or ON_LEAVE")
     private String employmentStatus;
 
     @NotNull
