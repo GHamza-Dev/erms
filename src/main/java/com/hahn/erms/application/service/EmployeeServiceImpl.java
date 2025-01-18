@@ -5,24 +5,26 @@ import com.hahn.erms.application.dto.EmployeeDTO;
 import com.hahn.erms.application.dto.SearchRequest;
 import com.hahn.erms.application.dto.UpdateEmployeeRequest;
 import com.hahn.erms.application.entity.Employee;
-import com.hahn.erms.application.mapper.EmployeeMapper;
+import com.hahn.erms.application.mapper.RequestEntityMapper;
 import com.hahn.erms.application.repository.EmployeeRepository;
+import com.hahn.erms.common.exception.BusinessException;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
 @Log4j2
 public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
-    private final EmployeeMapper employeeMapper;
+    private final RequestEntityMapper requestEntityMapper;
 
     public EmployeeServiceImpl(EmployeeRepository employeeRepository,
-                               EmployeeMapper employeeMapper) {
+                               RequestEntityMapper requestEntityMapper) {
         this.employeeRepository = employeeRepository;
-        this.employeeMapper = employeeMapper;
+        this.requestEntityMapper = requestEntityMapper;
     }
 
     @Override
@@ -33,7 +35,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         validateCreateRequest(request);
 
-        Employee employee = employeeMapper.mapToCreateEmployee(request);
+        Employee employee = requestEntityMapper.mapToCreateEmployee(request);
 
         employee.setEmployeeId(generateEmployeeId());
 
@@ -75,11 +77,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private void validateCreateRequest(CreateEmployeeRequest request) {
         log.info("Validating create employee request");
-        // Check for existing email
         if (employeeRepository.existsByEmail(request.getEmail())) {
-            log.info("Email already exists");
-            // TODO: to be refactored to custom exception
-            throw new RuntimeException("Email already exists: " + request.getEmail());
+            throw new BusinessException("ERR_EMAIL_ALREADY_EXIST", HttpStatus.BAD_REQUEST);
         }
 
         log.info("Validation passed");

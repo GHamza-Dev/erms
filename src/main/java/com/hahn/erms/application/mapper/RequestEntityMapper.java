@@ -1,6 +1,5 @@
 package com.hahn.erms.application.mapper;
 
-import com.hahn.erms.application.constant.EmploymentStatus;
 import com.hahn.erms.application.dto.CreateEmployeeRequest;
 import com.hahn.erms.application.entity.Contract;
 import com.hahn.erms.application.entity.Employee;
@@ -8,15 +7,16 @@ import com.hahn.erms.application.entity.Department;
 import com.hahn.erms.application.entity.JobTitle;
 import com.hahn.erms.application.repository.DepartmentRepository;
 import com.hahn.erms.application.repository.JobTitleRepository;
+import com.hahn.erms.common.exception.BusinessException;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
 @Log4j2
-public class EmployeeMapper {
+public class RequestEntityMapper {
     private final DepartmentRepository departmentRepository;
     private final JobTitleRepository jobTitleRepository;
 
@@ -40,11 +40,11 @@ public class EmployeeMapper {
         employee.setContract(contract);
 
         Department department = departmentRepository.findById(request.getDepartmentId())
-                .orElseThrow(() -> new IllegalArgumentException("Department not found"));
+                .orElseThrow(() -> new BusinessException("ERR_DEPARTMENT_NOT_FOUND", HttpStatus.BAD_REQUEST));
         employee.setDepartment(department);
 
         JobTitle jobTitle = jobTitleRepository.findById(request.getJobTitleId())
-                .orElseThrow(() -> new IllegalArgumentException("Job Title not found"));
+                .orElseThrow(() -> new BusinessException("ERR_JOB_TITLE_NOT_FOUND", HttpStatus.BAD_REQUEST));
         employee.setJobTitle(jobTitle);
 
         log.info("Employee mapped successfully");
