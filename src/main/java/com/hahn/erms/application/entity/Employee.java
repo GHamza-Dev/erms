@@ -4,8 +4,12 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
+import org.hibernate.envers.RevisionType;
 
 @Entity
+@Audited
 @Table(name = "employees")
 @Getter
 @Setter
@@ -31,14 +35,22 @@ public class Employee extends BaseEntity {
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "employee")
     private Contract contract;
 
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
     private Department department;
 
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job_title_id")
     private JobTitle jobTitle;
 
     @Column
     private String address;
+
+//    @Column(name = "rev")
+//    private int revision;
+//
+//    @Column(name = "revtype")
+//    private RevisionType revisionType;
 }
