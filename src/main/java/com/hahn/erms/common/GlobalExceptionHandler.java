@@ -7,6 +7,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -61,6 +62,18 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(response, status);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<AppErrorResponse> handleBadCredentialsException(BadCredentialsException ex) {
+        String message = getMessage("AUTH_USERNAME_PASSWORD_INVALID");
+
+        AppErrorResponse response = AppErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .error(message)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(Exception.class)
