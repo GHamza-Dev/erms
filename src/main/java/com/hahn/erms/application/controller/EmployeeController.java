@@ -26,4 +26,20 @@ public class EmployeeController {
     public ResponseEntity<EmployeeDTO> updateEmployee(@RequestBody @Valid UpdateEmployeeRequest employee) {
         return ResponseEntity.ok(employeeService.updateEmployee(employee));
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<EmployeeDTO> getEmployee(@PathVariable Long id) {
+        return ResponseEntity.ok(employeeService.getEmployeeById(id));
+    }
+
+    @GetMapping("find-by-employee-id/{employeeId}")
+    public ResponseEntity<EmployeeDTO> findEmployeeById(@PathVariable String employeeId) {
+        return ResponseEntity.ok(employeeService.getEmployeeByEmployeeId(employeeId));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
+        employeeService.deleteEmployee(id);
+        return ResponseEntity.noContent().build();
+    }
 }

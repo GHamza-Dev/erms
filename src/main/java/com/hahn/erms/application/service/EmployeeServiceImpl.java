@@ -57,17 +57,25 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDTO getEmployeeById(Long id) {
-        return null;
+        Employee employee = employeeRepository.findById(id).orElseThrow(EmployeeNotFoundException::new);
+        return EmployeeDTO.toDto(employee);
     }
 
     @Override
     public EmployeeDTO getEmployeeByEmployeeId(String employeeId) {
-        return null;
+        Employee employee = employeeRepository.findByEmployeeId(employeeId);
+
+        if (employee == null) {
+            throw new EmployeeNotFoundException();
+        }
+
+        return EmployeeDTO.toDto(employee);
     }
 
     @Override
     public void deleteEmployee(Long id) {
-
+        employeeRepository.findById(id).orElseThrow(EmployeeNotFoundException::new);
+        employeeRepository.deleteById(id);
     }
 
     @Override
