@@ -59,7 +59,7 @@ public class DatabaseInitializer {
         Department hrDepartment = createDepartment("Human Resources", "HR-001");
         Department financeDepartment = createDepartment("Finance", "FIN-001");
         Department marketingDepartment = createDepartment("Marketing", "MKT-001");
-        
+
         // Create Job Titles
         log.info("Creating job titles...");
         JobTitle ceo = createJobTitle("CEO", "Chief Executive Officer");
@@ -72,44 +72,49 @@ public class DatabaseInitializer {
 
         // Create Employees with Contracts
         log.info("Creating employees...");
-        
+
         // Admin Employee
         Employee adminEmployee = createEmployee(
-            "John", "Admin", "admin@erms.com", "+1234567890",
-            itDepartment, ceo, "ACTIVE", "PERMANENT"
+                "John", "Admin", "admin@erms.com", "+1234567890",
+                itDepartment, ceo, "ACTIVE", "PERMANENT"
         );
 
         // HR Manager Employee
         Employee hrManagerEmployee = createEmployee(
-            "Sarah", "Johnson", "hr.manager@erms.com", "+1234567891",
-            hrDepartment, hrManager, "ACTIVE", "PERMANENT"
+                "Sarah", "Johnson", "hr.manager@erms.com", "+1234567891",
+                hrDepartment, hrManager, "ACTIVE", "PERMANENT"
         );
 
         // IT Manager Employee
         Employee itManagerEmployee = createEmployee(
-            "Michael", "Tech", "it.manager@erms.com", "+1234567892",
-            itDepartment, cto, "ACTIVE", "PERMANENT"
+                "Michael", "Tech", "it.manager@erms.com", "+1234567892",
+                itDepartment, cto, "ACTIVE", "PERMANENT"
+        );
+
+        Employee mrkManagerEmployee = createEmployee(
+                "Hamza", "Tijani", "mrk.manager@erms.com", "+1234567892",
+                marketingDepartment, marketingManager, "ACTIVE", "PERMANENT"
         );
 
         // Regular Employees
         Employee developer1 = createEmployee(
-            "David", "Smith", "david.smith@erms.com", "+1234567893",
-            itDepartment, developer, "ACTIVE", "PERMANENT"
+                "David", "Smith", "david.smith@erms.com", "+1234567893",
+                itDepartment, developer, "ACTIVE", "PERMANENT"
         );
 
         Employee developer2 = createEmployee(
-            "Emma", "Wilson", "emma.wilson@erms.com", "+1234567894",
-            itDepartment, developer, "ACTIVE", "PERMANENT"
+                "Emma", "Wilson", "emma.wilson@erms.com", "+1234567894",
+                itDepartment, developer, "ACTIVE", "PERMANENT"
         );
 
         Employee designer1 = createEmployee(
-            "Sophie", "Brown", "sophie.brown@erms.com", "+1234567895",
-            itDepartment, designer, "ACTIVE", "PERMANENT"
+                "Sophie", "Brown", "sophie.brown@erms.com", "+1234567895",
+                itDepartment, designer, "ACTIVE", "PERMANENT"
         );
 
         Employee accountant1 = createEmployee(
-            "James", "Davis", "james.davis@erms.com", "+1234567896",
-            financeDepartment, accountant, "ACTIVE", "PERMANENT"
+                "James", "Davis", "james.davis@erms.com", "+1234567896",
+                financeDepartment, accountant, "ACTIVE", "PERMANENT"
         );
 
         // Create Users
@@ -118,7 +123,9 @@ public class DatabaseInitializer {
         createUser("hrmanager", "hr", "hr.manager@erms.com", Role.ROLE_HR, hrManagerEmployee);
         createUser("itmanager", "it", "it.manager@erms.com", Role.ROLE_MANAGER, itManagerEmployee);
         createUser("developer1", "dev", "david.smith@erms.com", Role.ROLE_EMPLOYEE, developer1);
-        
+        createUser("mrkmanager", "mrkmanager", "mrk.manager@erms.com", Role.ROLE_MANAGER, mrkManagerEmployee);
+
+
         log.info("Database initialization completed");
     }
 
@@ -137,8 +144,8 @@ public class DatabaseInitializer {
     }
 
     private Employee createEmployee(String firstName, String lastName, String email, String phone,
-                                  Department department, JobTitle jobTitle, 
-                                  String employmentStatus, String contractType) {
+                                    Department department, JobTitle jobTitle,
+                                    String employmentStatus, String contractType) {
         Employee employee = new Employee();
         employee.setFirstName(firstName);
         employee.setLastName(lastName);
@@ -154,7 +161,7 @@ public class DatabaseInitializer {
         contract.setHireDate(LocalDate.now());
         contract.setContractType(contractType);
         contract.setEmployee(employee);
-        
+
         employee.setContract(contract);
 
         return employeeRepository.save(employee);
