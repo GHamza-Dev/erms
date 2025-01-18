@@ -1,6 +1,7 @@
 package com.hahn.erms.application.mapper;
 
 import com.hahn.erms.application.dto.CreateEmployeeRequest;
+import com.hahn.erms.application.dto.UpdateEmployeeRequest;
 import com.hahn.erms.application.entity.Contract;
 import com.hahn.erms.application.entity.Employee;
 import com.hahn.erms.application.entity.Department;
@@ -10,6 +11,7 @@ import com.hahn.erms.application.repository.JobTitleRepository;
 import com.hahn.erms.common.exception.BusinessException;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -49,5 +51,20 @@ public class RequestEntityMapper {
 
         log.info("Employee mapped successfully");
         return employee;
+    }
+
+    public void mapToUpdateEmployee(Employee employee, UpdateEmployeeRequest request) {
+        if (StringUtils.isNotBlank(request.getFirstName())) {
+            employee.setFirstName(request.getFirstName());
+        }
+        if (StringUtils.isNotBlank(request.getLastName())) {
+            employee.setLastName(request.getLastName());
+        }
+        if (StringUtils.isNotBlank(request.getEmail())) {
+            employee.setEmail(request.getEmail());
+        }
+        if (StringUtils.isNotBlank(request.getPhone())) {
+            employee.setPhone(request.getPhone());
+        }
     }
 }

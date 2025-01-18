@@ -8,6 +8,7 @@ import com.hahn.erms.application.entity.Employee;
 import com.hahn.erms.application.mapper.RequestEntityMapper;
 import com.hahn.erms.application.repository.EmployeeRepository;
 import com.hahn.erms.common.exception.BusinessException;
+import com.hahn.erms.common.exception.EmployeeNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -46,7 +47,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDTO updateEmployee(UpdateEmployeeRequest request) {
-        return null;
+        log.info("Updating employee from request: {}", request);
+        Employee employee = employeeRepository.findById(request.getId()).orElseThrow(EmployeeNotFoundException::new);
+        requestEntityMapper.mapToUpdateEmployee(employee, request);
+        Employee updatedEmployee = employeeRepository.save(employee);
+        log.info("Employee updated successfully");
+        return EmployeeDTO.toDto(updatedEmployee);
     }
 
     @Override
@@ -87,23 +93,5 @@ public class EmployeeServiceImpl implements EmployeeService {
     private String generateEmployeeId() {
         // TODO: generate human readable id
         return "EMP_" + System.currentTimeMillis();
-    }
-
-    private void updateEmployeeFromRequest(Employee employee, UpdateEmployeeRequest request) {
-        if (request.getFirstName() != null) {
-            employee.setFirstName(request.getFirstName());
-        }
-        if (request.getLastName() != null) {
-            employee.setLastName(request.getLastName());
-        }
-        if (request.getEmail() != null) {
-            employee.setEmail(request.getEmail());
-        }
-        if (request.getPhone() != null) {
-            employee.setPhone(request.getPhone());
-        }
-        if (request.getEmploymentStatus() != null) {
-            employee.setEmployeeId(request.getEmploymentStatus());
-        }
     }
 }
