@@ -5,6 +5,7 @@ import com.hahn.erms.application.dto.EmployeeDTO;
 import com.hahn.erms.application.dto.UpdateEmployeeRequest;
 import com.hahn.erms.application.service.EmployeeService;
 import com.hahn.erms.security.anotations.CanUpdateEmployee;
+import com.hahn.erms.security.anotations.CanViewEmployee;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,7 +32,7 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.updateEmployee(employee));
     }
 
-    @PreAuthorize("hasAnyRole('HR', 'ADMIN')")
+    @CanViewEmployee
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeDTO> getEmployee(@PathVariable Long id) {
         return ResponseEntity.ok(employeeService.getEmployeeById(id));
