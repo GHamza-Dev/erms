@@ -33,7 +33,7 @@ public class AppAuthorizationService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         for (String role : roles) {
             if (authentication.getAuthorities().stream()
-                    .anyMatch(authority -> authority.getAuthority().equals("ROLE_" + role))) {
+                    .anyMatch(authority -> authority.getAuthority().equals(role))) {
                 return true;
             }
         }
