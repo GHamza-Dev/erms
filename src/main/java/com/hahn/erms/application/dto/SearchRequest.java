@@ -1,5 +1,6 @@
 package com.hahn.erms.application.dto;
 
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,4 +17,13 @@ public class SearchRequest {
     private LocalDate hireDateFrom;
     private LocalDate hireDateTo;
     private String contractType;
+
+    private Integer page = 0;
+    private Integer size = 20;
+
+    @Pattern(regexp = "id|employeeId")
+    private String sortBy = "id";
+
+    @Pattern(regexp = "desc|asc")
+    private String sortDirection = "desc";
 }

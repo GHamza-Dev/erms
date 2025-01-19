@@ -1,8 +1,7 @@
 package com.hahn.erms.application.controller;
 
-import com.hahn.erms.application.dto.CreateEmployeeRequest;
-import com.hahn.erms.application.dto.EmployeeDTO;
-import com.hahn.erms.application.dto.UpdateEmployeeRequest;
+import com.hahn.erms.application.dto.*;
+import com.hahn.erms.application.dto.projection.EmployeeProjection;
 import com.hahn.erms.application.service.EmployeeService;
 import com.hahn.erms.security.anotations.CanUpdateEmployee;
 import com.hahn.erms.security.anotations.CanViewEmployee;
@@ -48,5 +47,10 @@ public class EmployeeController {
     public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<PagedResponse<EmployeeProjection>> searchEmployees(@RequestBody @Valid SearchRequest searchRequest) {
+        return ResponseEntity.ok(employeeService.searchEmployees(searchRequest));
     }
 }

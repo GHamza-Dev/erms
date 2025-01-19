@@ -1,9 +1,7 @@
 package com.hahn.erms.application.service;
 
-import com.hahn.erms.application.dto.CreateEmployeeRequest;
-import com.hahn.erms.application.dto.EmployeeDTO;
-import com.hahn.erms.application.dto.SearchRequest;
-import com.hahn.erms.application.dto.UpdateEmployeeRequest;
+import com.hahn.erms.application.dto.*;
+import com.hahn.erms.application.dto.projection.EmployeeProjection;
 import com.hahn.erms.application.entity.Employee;
 import com.hahn.erms.application.mapper.RequestEntityMapper;
 import com.hahn.erms.application.repository.EmployeeRepository;
@@ -12,7 +10,9 @@ import com.hahn.erms.common.exception.EmployeeNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -90,11 +90,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Page<EmployeeDTO> searchEmployees(SearchRequest searchRequest, Pageable pageable) {
-        return null;
-    }
-
-    @Override
     public Page<EmployeeDTO> getEmployeesByDepartment(Long departmentId, Pageable pageable) {
         return null;
     }
@@ -112,5 +107,24 @@ public class EmployeeServiceImpl implements EmployeeService {
     private String generateEmployeeId() {
         // TODO: generate human readable id
         return "EMP_" + System.currentTimeMillis();
+    }
+
+    @Override
+    public PagedResponse<EmployeeProjection> searchEmployees(SearchRequest request) {
+        log.info("Searching employees with criteria: {}", request);
+
+        Sort sort = Sort.by(
+                request.getSortDirection().equalsIgnoreCase("desc") ?
+                        Sort.Direction.DESC : Sort.Direction.ASC, request.getSortBy()
+        );
+
+        Pageable pageable = PageRequest.of(
+                request.getPage(),
+                request.getSize(),
+                sort
+        );
+
+        Page<EmployeeProjection> page = employeeRepository.searchEmployees(request, pageable);
+        return new PagedResponse<>(page);
     }
 }

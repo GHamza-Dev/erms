@@ -1,9 +1,7 @@
 package com.hahn.erms.application.service;
 
-import com.hahn.erms.application.dto.CreateEmployeeRequest;
-import com.hahn.erms.application.dto.EmployeeDTO;
-import com.hahn.erms.application.dto.SearchRequest;
-import com.hahn.erms.application.dto.UpdateEmployeeRequest;
+import com.hahn.erms.application.dto.*;
+import com.hahn.erms.application.dto.projection.EmployeeProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -13,6 +11,6 @@ public interface EmployeeService {
     EmployeeDTO getEmployeeById(Long id);
     EmployeeDTO getEmployeeByEmployeeId(String employeeId);
     void deleteEmployee(Long id);
-    Page<EmployeeDTO> searchEmployees(SearchRequest searchRequest, Pageable pageable);
+    PagedResponse<EmployeeProjection> searchEmployees(SearchRequest searchRequest);
     Page<EmployeeDTO> getEmployeesByDepartment(Long departmentId, Pageable pageable);
 }
