@@ -22,7 +22,7 @@ public class ErmsApplication implements CommandLineRunner {
 	@Override
 	@Profile("!prod")
 	public void run(String... args) throws Exception {
-//		databaseInitializer.cleanDatabase();
-//		databaseInitializer.run(args);
+		databaseInitializer.cleanDatabase();
+		databaseInitializer.run(args);
 	}
 }

@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  oracle-db:
+    image: container-registry.oracle.com/database/free:latest
+    environment:
+      - ORACLE_PWD=erms123
+      - ORACLE_PDB=FREEPDB1
+      - ORACLE_CHARACTERSET=AL32UTF8
+      - MEMORY_TARGET=1G
+      - MEMORY_MAX_TARGET=1G
+      - ORACLE_EDITION=enterprise
+      - ORACLE_DATABASE=FREE
+      - ENABLE_ARCHIVELOG=false
+    ports:
+      - "1521:1521"
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "sqlplus", "-L", "sys/erms123@//localhost:1521/FREEPDB1 as sysdba", "-q", "exit"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+    restart: unless-stopped
+
+  erms-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_APPLICATION_NAME=erms
+      - SERVER_SERVLET_CONTEXT_PATH=/api/erms
+      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@oracle-db:1521/FREEPDB1
+      - SPRING_DATASOURCE_USERNAME=ermsadmin
+      - SPRING_DATASOURCE_PASSWORD=erms123
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=oracle.jdbc.OracleDriver
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.OracleDialect
+      - SPRINGDOC_SWAGGER_UI_PATH=/swagger-ui.html
+      - SPRINGDOC_API_DOCS_PATH=/api-docs
+      - SPRINGDOC_SWAGGER_UI_ENABLED=true
+      - APP_JWT_SECRET=AHC02pnb3RTR0kCBRkLUtH+Eodb/VY61XtmQieT7VEozvIoryd2XWAdO3MvQkKK9Nq5pdnHHOTOCGdxnwL4t5A==
+      - APP_JWT_EXPIRATION=690000
+      - SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT=60000
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=5
+      - SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE=1
+    ports:
+      - "8080:8080"
+    depends_on:
+      oracle-db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  oracle-data:
