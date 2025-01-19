@@ -32,6 +32,9 @@ public class Employee extends BaseEntity {
     @Column(nullable = false)
     private String employmentStatus;
 
+    @Column
+    private Boolean isAssignedToProject = false;
+
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "employee")
     private Contract contract;
 
@@ -47,10 +50,4 @@ public class Employee extends BaseEntity {
 
     @Column
     private String address;
-
-//    @Column(name = "rev")
-//    private int revision;
-//
-//    @Column(name = "revtype")
-//    private RevisionType revisionType;
 }

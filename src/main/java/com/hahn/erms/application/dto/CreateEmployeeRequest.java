@@ -44,4 +44,6 @@ public class CreateEmployeeRequest {
 
     @NotBlank
     private String address;
+
+    private Boolean isAssignedToProject;
 }

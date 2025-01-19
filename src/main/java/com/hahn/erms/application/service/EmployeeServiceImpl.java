@@ -16,16 +16,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Set;
+
 @Service
 @Log4j2
 public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final RequestEntityMapper requestEntityMapper;
+    private final EmployeeAuthorizationService employeeAuthorizationService;
 
     public EmployeeServiceImpl(EmployeeRepository employeeRepository,
-                               RequestEntityMapper requestEntityMapper) {
+                               RequestEntityMapper requestEntityMapper,
+                               EmployeeAuthorizationService employeeAuthorizationService) {
         this.employeeRepository = employeeRepository;
         this.requestEntityMapper = requestEntityMapper;
+        this.employeeAuthorizationService = employeeAuthorizationService;
     }
 
     @Override
@@ -49,8 +55,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDTO updateEmployee(UpdateEmployeeRequest request) {
         log.info("Updating employee from request: {}", request);
         Employee employee = employeeRepository.findById(request.getId()).orElseThrow(EmployeeNotFoundException::new);
-        requestEntityMapper.mapToUpdateEmployee(employee, request);
+
+        List<String> fieldsToUpdate = requestEntityMapper.mapToUpdateEmployee(employee, request);
+
+        employeeAuthorizationService.verifyFieldsAccess(Set.copyOf(fieldsToUpdate));
+
         Employee updatedEmployee = employeeRepository.save(employee);
+
         log.info("Employee updated successfully");
         return EmployeeDTO.toDto(updatedEmployee);
     }

@@ -21,6 +21,8 @@ public class UpdateEmployeeRequest {
     @Pattern(regexp = "^(ACTIVE|INACTIVE|ON_LEAVE)$", message = "Status must be ACTIVE, INACTIVE, or ON_LEAVE")
     private String employmentStatus;
 
-    private Long departmentId;
-    private Long jobTitleId;
+    private Boolean isAssignedToProject;
+
+//    private Long departmentId;
+//    private Long jobTitleId;
 }
