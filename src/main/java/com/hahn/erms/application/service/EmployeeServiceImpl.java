@@ -7,6 +7,7 @@ import com.hahn.erms.application.mapper.RequestEntityMapper;
 import com.hahn.erms.application.repository.EmployeeRepository;
 import com.hahn.erms.common.exception.BusinessException;
 import com.hahn.erms.common.exception.EmployeeNotFoundException;
+import com.hahn.erms.security.enums.Role;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -113,6 +114,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     public PagedResponse<EmployeeProjection> searchEmployees(SearchRequest request) {
         log.info("Searching employees with criteria: {}", request);
 
+        List<String> roles = employeeAuthorizationService.getAuthorities();
+
+        if (hasOnlyManagerRole(roles)) {
+            Employee employee = employeeAuthorizationService.getCurrentAuthenticatedEmployee();
+            if (employee != null && employee.getDepartment() != null) {
+                request.setDepartmentId(employee.getDepartment().getId());
+            }
+        }
+
         Sort sort = Sort.by(
                 request.getSortDirection().equalsIgnoreCase("desc") ?
                         Sort.Direction.DESC : Sort.Direction.ASC, request.getSortBy()
@@ -126,5 +136,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Page<EmployeeProjection> page = employeeRepository.searchEmployees(request, pageable);
         return new PagedResponse<>(page);
+    }
+
+
+    private boolean hasOnlyManagerRole(List<String> roles) {
+        if (roles == null) {
+            log.warn("Current authenticated user have no roles!");
+            return false;
+        }
+
+        if (roles.size() > 1) {
+            return false;
+        }
+
+        return roles.contains(Role.ROLE_MANAGER.name());
     }
 }

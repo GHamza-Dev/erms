@@ -4,9 +4,12 @@ import com.hahn.erms.security.dao.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +41,10 @@ public class AppAuthorizationService {
             }
         }
         return false;
+    }
+
+    public List<String> getAuthorities() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
     }
 }
