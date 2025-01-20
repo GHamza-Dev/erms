@@ -12,7 +12,7 @@
 ERMS is a light Employee Resource Management System with a Spring Boot backend and a Java Swing desktop client. The system is designed as a two-tier application:
 
 Backend: REST APIs built with Spring Boot and Oracle Database
-Frontend: Desktop application built with Java Swing
+Frontend: Desktop application built with Java Swing [visit project repository](https://github.com/GHamza-Dev/erms-client)
 
 ## Quick Start
 
